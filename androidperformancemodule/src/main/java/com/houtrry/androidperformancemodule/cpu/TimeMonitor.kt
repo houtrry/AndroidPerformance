@@ -18,6 +18,8 @@ object TimeMonitor {
     private var mTimeMonitorHandle: TimeMonitorHandle = { tag, thread, stackTraceElementArray ->
         val startTime = System.currentTimeMillis()
         Log.d(TAG, ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+        val readCpuInfo = CpuUtils.readCpuInfo()
+        Log.d(TAG, "TimeMonitorHandle readCpuInfo $readCpuInfo")
         Log.d(TAG, "occur Time Monitor, tag: $tag, Tread is (${thread.id}, ${thread.name}, ${thread.state})")
         for (entry in stackTraceElementArray) {
             Log.d(TAG, "-----------------------------------------------------------")

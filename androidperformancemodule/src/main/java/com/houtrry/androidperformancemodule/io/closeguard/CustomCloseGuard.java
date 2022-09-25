@@ -1,5 +1,7 @@
 package com.houtrry.androidperformancemodule.io.closeguard;
 
+import android.util.Log;
+
 /**
  * @author: houtrry
  * @time: 2022/9/3
@@ -43,11 +45,11 @@ class CustomCloseGuard {
      *
      * @return
      */
-    public static CloseGuard get() {
+    public static CustomCloseGuard get() {
         if (!ENABLED) {
             return NOOP;
         }
-        return new CloseGuard();
+        return new CustomCloseGuard();
     }
 
     /**
@@ -115,7 +117,7 @@ class CustomCloseGuard {
         return currentTracker;
     }
 
-    private CloseGuard() {
+    private CustomCloseGuard() {
     }
 
     /**
@@ -208,7 +210,7 @@ class CustomCloseGuard {
     private static final class DefaultReporter implements Reporter {
         @Override
         public void report(String message, Throwable allocationSite) {
-            System.logW(message, allocationSite);
+            Log.w(message, allocationSite);
         }
     }
 }

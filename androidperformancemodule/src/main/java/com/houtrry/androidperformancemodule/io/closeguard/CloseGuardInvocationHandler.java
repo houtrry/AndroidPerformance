@@ -1,6 +1,7 @@
 package com.houtrry.androidperformancemodule.io.closeguard;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
@@ -24,7 +25,11 @@ class CloseGuardInvocationHandler implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args) {
         Object result = null;
         handleArgs(args);
-        result = method.invoke(mTargetCloseGuard, args);
+        try {
+            result = method.invoke(mTargetCloseGuard, args);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
         return result;
     }
 
@@ -32,7 +37,7 @@ class CloseGuardInvocationHandler implements InvocationHandler {
         if (mOnCloseGuardListener == null) {
             return;
         }
-        if (args == 0 || args.length < 2) {
+        if (args == null || args.length < 2) {
             return;
         }
         Object arg0 = args[0];

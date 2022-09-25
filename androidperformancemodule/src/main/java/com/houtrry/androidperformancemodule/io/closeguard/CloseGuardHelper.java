@@ -24,9 +24,9 @@ class CloseGuardHelper {
     private static OnCloseGuardListener sDefaultCloseGuardListener = new OnCloseGuardListener() {
         @Override
         public void onReport(String message, Throwable throwable) {
-            Log.d(TAG, "close repoter: "+message+", "+throwable.getMessage());
+            Log.d(TAG, "close repoter: " + message + ", " + throwable.getMessage());
             for (StackTraceElement stackTraceElement : throwable.getStackTrace()) {
-                Log.d(TAG, " "+stackTraceElement);
+                Log.d(TAG, " " + stackTraceElement);
             }
         }
     };
@@ -36,26 +36,37 @@ class CloseGuardHelper {
     }
 
     public static boolean tryHook() {
-        Class clsCloseGuard = Class.forName(PACKAGE_NAME_CLOSE_GUARD);
-        Field fieldEnable = clsCloseGuard.getDeclaredField(FIELD_CLOSE_GUARD_ENABLE);
-        fieldEnable.setAccessible(true);
-        fieldEnable.set(null, true);
-        Field fieldReporter = clsCloseGuard.getDeclaredField(FIELD_CLOSE_GUARD_REPORTER);
-        fieldReporter.setAccessible(true);
-        sOriginRepoter = fieldReporter.get(null);
-        Class clsCloseGuardRepoter = Class.forName(PACKAGE_NAME_CLOSE_GUARD_REPOTER);
-        Object newRepoter = Proxy.newProxyInstance(clsCloseGuard.getClassLoader(), new Class[]{clsCloseGuardRepoter}, new CloseGuardInvocationHandler(sOriginRepoter, sDefaultCloseGuardListener));
-        fieldReporter.set(null, newRepoter);
-        return true;
+        try {
+            Class clsCloseGuard = Class.forName(PACKAGE_NAME_CLOSE_GUARD);
+            Field fieldEnable = clsCloseGuard.getDeclaredField(FIELD_CLOSE_GUARD_ENABLE);
+            fieldEnable.setAccessible(true);
+            fieldEnable.set(null, true);
+            Field fieldReporter = clsCloseGuard.getDeclaredField(FIELD_CLOSE_GUARD_REPORTER);
+            fieldReporter.setAccessible(true);
+            sOriginRepoter = fieldReporter.get(null);
+            Class clsCloseGuardRepoter = Class.forName(PACKAGE_NAME_CLOSE_GUARD_REPOTER);
+            Object newRepoter = Proxy.newProxyInstance(clsCloseGuard.getClassLoader(), new Class[]{clsCloseGuardRepoter}, new CloseGuardInvocationHandler(sOriginRepoter, sDefaultCloseGuardListener));
+            fieldReporter.set(null, newRepoter);
+            return true;
+        } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public static boolean tryUnHook() {
-        Class clsCloseGuard = Class.forName(PACKAGE_NAME_CLOSE_GUARD);
-        Field fieldEnable = clsCloseGuard.getDeclaredField(FIELD_CLOSE_GUARD_ENABLE);
-        fieldEnable.setAccessible(true);
-        fieldEnable.set(null, false);
-        Field fieldReporter = clsCloseGuard.getDeclaredField(FIELD_CLOSE_GUARD_REPORTER);
-        fieldReporter.setAccessible(true);
-        fieldReporter.set(null, sOriginRepoter);
+        try {
+            Class clsCloseGuard = Class.forName(PACKAGE_NAME_CLOSE_GUARD);
+            Field fieldEnable = clsCloseGuard.getDeclaredField(FIELD_CLOSE_GUARD_ENABLE);
+            fieldEnable.setAccessible(true);
+            fieldEnable.set(null, false);
+            Field fieldReporter = clsCloseGuard.getDeclaredField(FIELD_CLOSE_GUARD_REPORTER);
+            fieldReporter.setAccessible(true);
+            fieldReporter.set(null, sOriginRepoter);
+            return true;
+        } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
