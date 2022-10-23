@@ -3,6 +3,9 @@ package com.houtrry.androidperformancemodule.cpu
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 /**
  * @author: houtrry
@@ -16,22 +19,22 @@ object TimeMonitor {
     private val mTaskMap by lazy { mutableMapOf<String, Pair<Runnable, Thread>>() }
 
     private var mTimeMonitorHandle: TimeMonitorHandle = { tag, thread, stackTraceElementArray ->
-        val startTime = System.currentTimeMillis()
-        Log.d(TAG, ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-        val readCpuInfo = CpuUtils.readCpuInfo()
-        Log.d(TAG, "TimeMonitorHandle readCpuInfo $readCpuInfo")
-        Log.d(TAG, "occur Time Monitor, tag: $tag, Tread is (${thread.id}, ${thread.name}, ${thread.state})")
-        for (entry in stackTraceElementArray) {
-            Log.d(TAG, "-----------------------------------------------------------")
-            Log.d(TAG, "   ${entry.key.name} | id: ${entry.key.id}, state: ${entry.key.state}, isAlive: ${entry.key.isAlive}")
-            for (stackTraceElement in entry.value) {
-                Log.d(TAG, "    $stackTraceElement")
+        GlobalScope.launch(Dispatchers.IO) { val startTime = System.currentTimeMillis()
+            Log.d(TAG, ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+            val readCpuInfo = CpuUtils.readCpuInfo()
+            Log.d(TAG, "TimeMonitorHandle readCpuInfo $readCpuInfo")
+            Log.d(TAG, "occur Time Monitor, tag: $tag, Tread is (${thread.id}, ${thread.name}, ${thread.state})")
+            for (entry in stackTraceElementArray) {
+                Log.d(TAG, "-----------------------------------------------------------")
+                Log.d(TAG, "   ${entry.key.name} | id: ${entry.key.id}, state: ${entry.key.state}, isAlive: ${entry.key.isAlive}")
+                for (stackTraceElement in entry.value) {
+                    Log.d(TAG, "    $stackTraceElement")
+                }
             }
-        }
-        Log.d(TAG, "-----------------------------------------------------------")
-        Log.d(TAG, "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
-        Log.d(TAG, "TimeMonitorHandle cost time is ${System.currentTimeMillis() - startTime}")
-        Log.d(TAG, "************************************************************")
+            Log.d(TAG, "-----------------------------------------------------------")
+            Log.d(TAG, "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+            Log.d(TAG, "TimeMonitorHandle cost time is ${System.currentTimeMillis() - startTime}")
+            Log.d(TAG, "************************************************************") }
     }
 
     fun setTimeMonitorHandle(t: TimeMonitorHandle) {

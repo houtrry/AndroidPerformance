@@ -4,7 +4,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
+import androidx.lifecycle.lifecycleScope
+import com.houtrry.androidperformancemodule.cpu.CpuUtils
 import com.houtrry.androidperformancemodule.cpu.TimeMonitor
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

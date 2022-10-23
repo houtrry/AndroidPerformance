@@ -26,12 +26,12 @@ fun String.readFile(): String {
         fis = FileInputStream(file)
         isr = InputStreamReader(fis)
         bfr = BufferedReader(isr)
-        var text:String? = bfr.readLine()
+        var text: String? = bfr.readLine()
         while (text != null) {
             sb.append(text)
             text = bfr.readLine()
         }
-    } catch(e: IOException) {
+    } catch (e: IOException) {
         e.printStackTrace()
         Log.e("readFile", "error: ${e.message}")
     } finally {
@@ -60,7 +60,7 @@ fun String.writeFile(file: File): Boolean {
         bfw.write(this)
         bfw.flush()
         return true
-    } catch(e: IOException) {
+    } catch (e: IOException) {
         e.printStackTrace()
     } finally {
         bfw?.close()
@@ -68,4 +68,19 @@ fun String.writeFile(file: File): Boolean {
         fos?.close()
     }
     return false
+}
+
+inline fun <T, R, E> notNull(t: T?, r: R?, block: ((T, R) -> E?)): E? {
+    return if (t != null && r != null) {
+        block(t, r)
+    } else {
+        null
+    }
+}
+
+inline fun <R> notNull1(vararg args: Any?, block: (() -> R)): R? {
+    return when (args.filterNotNull().size) {
+        args.size -> block()
+        else -> null
+    }
 }
