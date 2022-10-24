@@ -2,6 +2,7 @@ package com.houtrry.androidperformancemodule.utils
 
 import android.util.Log
 import java.io.*
+import java.lang.Exception
 
 /**
  * @author: houtrry
@@ -84,3 +85,54 @@ inline fun <R> notNull1(vararg args: Any?, block: (() -> R)): R? {
         else -> null
     }
 }
+
+fun String.execCommand(): String {
+    var dis: BufferedReader? = null
+    var dos: BufferedWriter? = null
+    try {
+        val process = Runtime.getRuntime().exec("su")
+        dis = BufferedReader(InputStreamReader(process.inputStream))
+        dos = BufferedWriter(OutputStreamWriter(process.outputStream))
+        dos.write("$this\n")
+        dos.flush()
+        dos.write("exit\n")
+        dos.flush()
+        val result =  dis.readText()
+        process.waitFor()
+        return result
+    } catch (e: Exception) {
+        e.printStackTrace()
+    } finally {
+        dis?.close()
+        dos?.close()
+    }
+    return ""
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

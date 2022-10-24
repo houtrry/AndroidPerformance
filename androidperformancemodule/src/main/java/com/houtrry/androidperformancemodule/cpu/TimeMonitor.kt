@@ -2,7 +2,10 @@ package com.houtrry.androidperformancemodule.cpu
 
 import android.os.Handler
 import android.os.Looper
+import android.os.Process
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
+import com.houtrry.androidperformancemodule.utils.execCommand
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -35,6 +38,7 @@ object TimeMonitor {
             Log.d(TAG, "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
             Log.d(TAG, "TimeMonitorHandle cost time is ${System.currentTimeMillis() - startTime}")
             Log.d(TAG, "************************************************************") }
+            Log.d(TAG, "kill -3 ${Process.myPid()}".execCommand())
     }
 
     fun setTimeMonitorHandle(t: TimeMonitorHandle) {
